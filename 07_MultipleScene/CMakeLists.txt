@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.6)
-set(ProjName EmptyExample)
+set(ProjName MultipleScene)
 project(${ProjName})
 
 find_package(OpenThreads)
