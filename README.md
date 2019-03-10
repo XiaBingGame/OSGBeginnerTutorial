@@ -19,3 +19,8 @@
 	- 凹多边形转凸多边形
 * 05_AddModel
 	- osg::Group::addChild
+
+* 09_PickingGeometry
+	- 鼠标点击创建框框, 通过 MatrixTransform 实现
+	- NodeMask 的使用
+	- 鼠标点击相交检测
