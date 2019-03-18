@@ -20,7 +20,6 @@
 * 05_AddModel
 	- osg::Group::addChild
 
-
 * 08_GeometryDynamically
 	- 通过更新回调更改一个几何体
 * 08_AnimationPath
@@ -29,3 +28,7 @@
 	- 设置对象的状态属性更新回调
 * 08_Flashing
 	- 设置闪烁动画, 使用 osg::ImageSequence
+* 09_PickingGeometry
+	- 鼠标点击创建框框, 通过 MatrixTransform 实现
+	- NodeMask 的使用
+	- 鼠标点击相交检测
