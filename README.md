@@ -19,3 +19,13 @@
 	- 凹多边形转凸多边形
 * 05_AddModel
 	- osg::Group::addChild
+
+
+* 08_GeometryDynamically
+	- 通过更新回调更改一个几何体
+* 08_AnimationPath
+	- 实现动画路径
+* 08_FadingIn
+	- 设置对象的状态属性更新回调
+* 08_Flashing
+	- 设置闪烁动画, 使用 osg::ImageSequence
