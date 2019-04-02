@@ -9,7 +9,7 @@ int main(int argc, char** argv)
 	bool listAll = false;
 	std::string animationName;
 	arguments.read("--animation", animationName);
-	animationName = "MatIpo_ipo";
+	animationName = "Idle_Main";
 	if (arguments.read("--listall")) listAll = true;
 	listAll = true;
 

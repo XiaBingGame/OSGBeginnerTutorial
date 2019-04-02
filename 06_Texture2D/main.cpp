@@ -26,7 +26,7 @@ int main(int argc, char** argv)
 
 	osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
 	osg::ref_ptr<osg::Image> image =
-		osgDB::readImageFile("Images/lz.rgb");
+		osgDB::readImageFile("Images/smoke4.bmp");
 	texture->setImage(image.get());
 
 	osg::ref_ptr<osg::Geode> root = new osg::Geode;
