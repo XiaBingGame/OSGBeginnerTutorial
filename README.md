@@ -43,6 +43,13 @@
 * 05_TranslateNode
 	- osg::MatrixTransform
 		- setMatrix
+* 06_BezierCurve
+	- 使用几何着色器创建贝塞尔曲线
+	- 使用 line adjacency 图元作为输入, 该输入有四个元素
+* 06_CartoonCow
+	- 使用着色器卡通着色
+* 06_Fog
+	- Fog 的使用
 
 * 08_GeometryDynamically
 	- 通过更新回调更改一个几何体
