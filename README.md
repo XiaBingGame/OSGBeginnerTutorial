@@ -102,6 +102,13 @@
 		- getAnimationList() --- 得到动画列表
 		- playAnimation() --- 应用上面动画列表中的一个动画
 * 08_AnimationChannel
+	- osgAnimation::Vec3Keyframe, osgAnimation::QuatKeyframe 关键帧组成 osgAnimation::Vec3KeyframeContainer 和 osgAnimation::QuatKeyframeContainer 两个容器
+	- osgAnimation::Vec3LinearChannel/osgAnimation::QuatSphericalLinearChannel
+		- getOrCreateSampler()
+			- getOrCreateKeyframeContainer --- 得到容器
+	- osgAnimation::Animation
+		- setPlayMode
+		- addChannel
 
 * 08_GeometryDynamically
 	- 通过更新回调更改一个几何体
