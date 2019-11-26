@@ -109,16 +109,87 @@
 	- osgAnimation::Animation
 		- setPlayMode
 		- addChannel
-
-* 08_GeometryDynamically
-	- 通过更新回调更改一个几何体
+	- osgAnimation::UpdateMatrixTransform
+		- getStackedTransforms()
+			- 这是个容器， 保存 osgAnimation::StackedTranslateElement 元素 和 osgAnimation::StackedQuaternionElement 元素，这些名称的名字和之前 channel 的名字一样
+		- 这是一个节点更新回调
+	- osgAnimation::BasicAnimationManager
+		- registerAnimation 注册一个动画
+		- 这也是一个更新回调
+		- playAnimation 播放动画
 * 08_AnimationPath
 	- 实现动画路径
+	- osg::AnimationPath
+		- setLoopMode: 设置循环模式
+		- insert: 插入一个控制点
+	- osg::AnimationPathCallback 节点回调
+		- setAnimationPath 设置路径(osg::AnimationPath)
+	- 通常设置为节点更新回调
 * 08_FadingIn
 	- 设置对象的状态属性更新回调
+	- osg::StateAttributeCallback 派生自 osg::Callback
+		- bool run()
+		- void operator(), 两个参数, 分别为 osg::StateAttribute 和 osg::NodeVisitor 指针
+			- 本例修改 osg::Material 内 Diffuse 的 alpha 值, osg::Material 从 osg::StateAttribute 指针而来
+		- osg::StateAttribute 可以设置更新回调
+	- osgAnimation::InOutCubicMotion
+		- 类型别名 osgAnimation::MathMotionTemplate<InOutCubicFunction>
+		- 结构体 MathMotionTemplate 派生自 osgAnimation::Motion
+			- osgAnimation::Motion
+				- 纯基类函数 getValueInNormalizedRange, 第一个参数是时间比例(当前时间/总时间),第二个参数为返回的结果
+			- MathMotionTemplate 重写了函数 getValueInNormalizedRange, 调用了模板类的 getValueAt 函数
+		- 结构体 InOutCubicFunction 重写了 getValueAt 函数, 三次方来回运动
 * 08_Flashing
 	- 设置闪烁动画, 使用 osg::ImageSequence
-* 09_PickingGeometry
+		- addImage() --- 添加图像 
+		- setLength() --- 设置时间长度
+		- play() --- 播放
+	- 可以学会如何创建 osg::Image
+		- allocateImage 分配内存
+		- data() 某一行列的数据指针
+	- osg::Texture2D 纹理
+		- setImage() 目标可以是 osg::ImageSequence
+* 08_GeometryDynamically
+	- 通过更新回调更改一个几何体, 该回调为 osg::Drawable::UpdateCallback 的派生类
+	- 更新几何数组后调用函数 osg::Geometry::dirtyDisplayList() 和 osg::Geometry::dirtyBound() 更新显示列表和围绕盒
+* 08_SwitchUpdate
+	- 通过更新回调切换Switch节点子节点的状态
+* 09_DrivingCessna
+	- osg::Camera
+		- setAllowEventFocus() 是否允许其关联窗口产生的事件影响到该相机
+		- setViewMatrixAsLookAt() 设置视图矩阵
+	- osgViewer::Viewer
+		- addEventHandler() 添加事件处理(处理窗口事件)
+	- osgGA::GUIEventHandler 派生窗口事件处理类
+		- 重写 bool handle() 函数
+			- osgGA::GUIEventAdapter 获取键盘鼠标事件
+* 09_GCTraits
+	- osg::GraphicsContext::Traits 创建一个 traits
+	- osg::GraphicsContext::createGraphicsContext 使用该 traits 创建一个窗口 osg::GraphicsContext
+	- osg::Camera 创建一个相机
+		- setGraphicsContext 设置其窗口上下文
+		- setProjectionMatrixAsPerspective 设置投影矩阵
+	- osgViewer::Viewer
+		- setCamera 设置相机
+* 09_PickingGeometry --- 选择框
+	- 展示了如何创建选择框
+		- 线框,禁光照, 矩阵变换节点
+		- 通过矩阵变换绘制和移动线框
 	- 鼠标点击创建框框, 通过 MatrixTransform 实现
 	- NodeMask 的使用
 	- 鼠标点击相交检测
+	- osgUtil::IntersectionVisitor 访问, 使用相机 accept 调用该 visitor
+	- osg::computeLocalToWorld 计算矩阵
+
+* 09_UserTimer --- 可以添加一个用户事件
+	- osgGA::GUIEventAdapter::FRAME 可以处理帧事件
+	- viewer->getEventQueue()->userEvent() --- 添加一个用户事件
+* 09_Win32Handler --- Win32 API 和 osg
+	- WM_CREATE 事件创建一个 osgViewer 而后用线程推进
+	- 设置 traits->inheritedWindowData = windata(为窗口句柄)
+
+* 10_CustomFormat --- 自定义格式插件读写
+	- 派生自 osgDB::ReaderWriter
+	- REGISTER_OSGPLUGIN 宏注册
+
+* 11_Billboard 公告板
