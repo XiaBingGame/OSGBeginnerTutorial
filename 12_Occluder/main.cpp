@@ -7,6 +7,8 @@
 
 #define RAND(min, max) \
         ((min) + (float)rand()/(RAND_MAX+1) * ((max)-(min)))
+
+// 随机创建(-100.0, 1.0, -100.0) 到 (100.0, 100.0, 100.0) 范围内的大小为(1.0, 1.0) 的四边形
 osg::Geode* createMassiveQuads(unsigned int number)
 {
 	osg::ref_ptr<osg::Geode> geode = new osg::Geode;

@@ -193,3 +193,80 @@
 	- REGISTER_OSGPLUGIN 宏注册
 
 * 11_Billboard 公告板
+	- osg::Billboard
+		- setMode: osg::Billboard::POINT_ROT_EYE
+		- addDrawable: 添加一个可绘制对象, 因为 Billboard 派生自 osg::Geode
+
+* 11_Outline 给物体添加轮廓线效果.
+	- osgFX::Outline
+		- setWidth
+		- setColor
+		- addChild
+
+* 11_ParticleSystem 粒子系统
+	- osgParticle::ParticleSystem
+	- osg::PointSprite
+	- osgParticle::RandomRateCounter
+	- osgParticle::ModularEmitter
+	- osgParticle::AccelOperator
+	- osgParticle::ModularProgram
+
+* 11_Shadow 阴影效果
+	- osg::Node
+		- setNodeMask() --- 设置节点的 Mask
+	- osg::AnimationPathCallback 动画路径回调
+		- setAnimationPath() --- 设置动画路径
+	- osg::LightSource 光源
+		- getLight()
+	- osgShadow::ShadowMap
+		- setLight
+		- setTextureSize
+		- setTextureUnit
+	- osgShadow::ShadowedScene 这是一个节点
+		- setShadowTechnique 设置阴影技术
+		- setReceivesShadowTraversalMask 设置阴影接受 mask
+		- setCastsShadowTraversalMask 设置阴影投射 mask
+* 11_Text 输出文字
+	- osg::Camera 
+		- 设置投影矩阵
+		- 创建 HUD 相机用于绘制文本
+	- osgText::Text
+		- setFont
+		- setCharacterSize
+		- setAxisAlignment
+		- setPosition
+* 11_Text3D --- 3D 字体, 当成一个 3D 模型
+	- osgText::Text3D
+		- setFont
+		- setCharacterSize
+		- setCharacterDepth
+		- setAxisAlignment
+		- setPosition
+		- setText
+* 12_MultiThread --- 多线程程序
+	- OpenThreads::Thread 派生一个线程类
+	- OpenThreads::Mutex 互斥信号
+	- OpenThreads::ScopedLock<OpenThreads::Mutex> 锁
+	- OpenThreads::startThread --- 开启线程
+	- osgText::Text
+		- setText: 设置文本
+* 12_Occluder
+	- osg::OccluderNode 派生自 osg::Group, 主要用于提供钩子添加 ConvexPlanarOccluders 至场景中.
+		- setOccluder(): 添加一个 ConvexPlanarOccluder
+	- osg::ConvexPlanarOccluder 其内有 ConvexPlanarPolygon&
+	- osg::ConvexPlanarPolygon
+		- add 添加顶点
+	- 只需要把 OccluderNode 添加至场景就可以实现遮挡
+* 12_QuadTree --- 使用 pageLOD 创建四叉树
+	- osg::HeightField 派生自 osg::Shape
+		- setSkirtHeight 设置边裙高度
+		- setOrigin 设置原点,这里设置左下角为原点
+		- setHeight
+		- setXInterval, setYInterval
+	- osg::PagedLOD
+		- insertChild
+		- setFileName
+		- setCenterMode
+		- setCenter
+		- setRadius
+		- setRange

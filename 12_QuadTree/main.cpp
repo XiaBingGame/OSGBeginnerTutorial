@@ -16,8 +16,11 @@ unsigned int g_numRows = 1024;
 
 #define RAND(min, max) \
         ((min) + (float)rand()/(RAND_MAX+1) * ((max)-(min)))
+
+// 创建数据
 void createMassiveData()
 {
+	// 1024x1024 个 0.5 到 0.0 之间的值
 	g_data = new float[g_numCols * g_numRows];
 	for (unsigned int i = 0; i < g_numRows; ++i)
 	{
@@ -43,6 +46,7 @@ osg::Node* outputSubScene(unsigned int lv,
 	unsigned int x, unsigned int y,
 	const osg::Vec4& color)
 {
+	// 每个单元有多少最小单元的方块
 	unsigned int numInUnitCol = g_numCols / (int)powf(2.0f,
 		(float)lv);
 	unsigned int numInUnitRow = g_numRows / (int)powf(2.0f,
@@ -117,7 +121,9 @@ osg::Node* outputSubScene(unsigned int lv,
 
 	osg::ref_ptr<osg::PagedLOD> plod = new osg::PagedLOD;
 	std::string filename = createFileName(lv, x, y);
+	// 比较高层的节点
 	plod->insertChild(0, geode.get());
+	// 这是子节点, 更详细的内容
 	plod->setFileName(1, filename);
 	osgDB::writeNodeFile(*group, filename);
 
