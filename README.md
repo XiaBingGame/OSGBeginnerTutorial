@@ -270,3 +270,20 @@
 		- setCenter
 		- setRadius
 		- setRange
+
+* 12_SharingTexture
+	- osgDB::Registry::instance()->setReadFileCallback() 设置读文件回调
+	- osgDB::ReadFileCallback 读文件回调类, 重写 readImage 函数
+		- osgDB::Registry::instance()->readImageImplementation 调用底层的实现
+	- osgDB::Registry::instance()->getOrCreateSharedStateManager 创建共享状态管理器
+	- osgDB::SharedStateManager
+		- share
+
+* 12_ThreadingModel
+	- osgViewer::ViewerBase::ThreadingModel 线程模型
+		- osgViewer::ViewerBase::AutomaticSelection
+		- osgViewer::ViewerBase::SingleThreaded
+		- osgViewer::ViewerBase::ThreadPerContext
+		- osgViewer::ViewerBase::ThreadPerCamera
+	- osgViewer::CompositeViewer
+		- addView 添加多个 View
