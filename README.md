@@ -1,4 +1,4 @@
-# OpenSceneGraph 3.0 - Beginner's Guide 源码
+ --- 使用 pageLOD 创建四叉树# OpenSceneGraph 3.0 - Beginner's Guide 源码
 * 03_MonitorRFC
 	- 查看引用计数的变化
 	- osg::Referenced::referenceCount() --- 查看引用计数
@@ -19,7 +19,7 @@
 			- ColorArray
 			- PrimitiveSet
 * 04_DrawOctahedron
-	- 绘制一个多面体, 主要是讲图元, osg::DrawElementsUInt
+	- 绘制一个多面体, 主要是讲图元, osg::DrawElementsUInt 可以创建一个索引数组, geometry 调用 addPrimitiveSet() 添加它.
 	- osgUtil::SmoothingVisitor::smooth 平滑一个几何体。
 * 04_OpenGLTeapot
 	- 自定义 drawable, 进行自定义绘制
@@ -35,13 +35,14 @@
 * 04_TessellatePolygon
 	- 凹多边形转凸多边形(分形化一个 Geometry)
 	- osgUtil::Tessellator
+		- retessellatePolygons() 分形化一个几何体
 * 05_AddModel
 	- osg::Group::addChild
 * 05_AnalyzeStructure
 	- 遍历节点, 打印出其库名和类名
 	- 从 osg::NodeVisitor 派生
 * 05_LodNode
-	- osgUtil::Simplifier
+	- osgUtil::Simplifier --- 简化几何体
 	- osg::LOD --- addChild, 添加子节点。
 * 05_ProxyNode
 	- osg::ProxyNode
@@ -49,7 +50,7 @@
 * 05_SwitchAnimate
 	- osg::Switch
 		- setValue 设置可见性
-		- 重写 osg::Switch::traverse 方法
+		- 重写 osg::Switch::traverse 方法, 各种遍历会调用, 如更新遍历
 * 05_SwitchNode
 	- osg::Switch
 		- addChild 方法
@@ -96,7 +97,17 @@
 * 07_RTT(渲染到纹理)
 	- osg::Camera::setRenderTargetImplementation() --- 设置渲染到帧缓存对象
 	- osg::Camera::attach() --- 渲染至纹理
-
+	- 从 osg::NodeVisitor 派生一个访问器, 替换其内使用的问题
+		osg::Texture* oldTexture = dynamic_cast<osg::Texture*>(ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE));
+		if (oldTexture) ss->setTextureAttribute(0, _texture.get());
+	- 步骤
+		- 创建一个纹理 osg::Texture
+		- 创建相机, 设置视口为纹理大小
+			- 背景颜色, clearMask, renderOrder
+			- setRenderTargetImplementation 为帧缓存
+			- attach 一个纹理
+			- setReferenceFrame
+			- setViewMatrixAsLookAt
 * 08_AnimateCharacter
 	- osgAnimation::BasicAnimationManager --- 派生自更新回调
 		- getAnimationList() --- 得到动画列表
@@ -180,29 +191,24 @@
 	- 鼠标点击相交检测
 	- osgUtil::IntersectionVisitor 访问, 使用相机 accept 调用该 visitor
 	- osg::computeLocalToWorld 计算矩阵
-
 * 09_UserTimer --- 可以添加一个用户事件
 	- osgGA::GUIEventAdapter::FRAME 可以处理帧事件
 	- viewer->getEventQueue()->userEvent() --- 添加一个用户事件
 * 09_Win32Handler --- Win32 API 和 osg
 	- WM_CREATE 事件创建一个 osgViewer 而后用线程推进
 	- 设置 traits->inheritedWindowData = windata(为窗口句柄)
-
 * 10_CustomFormat --- 自定义格式插件读写
 	- 派生自 osgDB::ReaderWriter
 	- REGISTER_OSGPLUGIN 宏注册
-
 * 11_Billboard 公告板
 	- osg::Billboard
 		- setMode: osg::Billboard::POINT_ROT_EYE
 		- addDrawable: 添加一个可绘制对象, 因为 Billboard 派生自 osg::Geode
-
 * 11_Outline 给物体添加轮廓线效果.
 	- osgFX::Outline
 		- setWidth
 		- setColor
 		- addChild
-
 * 11_ParticleSystem 粒子系统
 	- osgParticle::ParticleSystem
 	- osg::PointSprite
@@ -210,7 +216,6 @@
 	- osgParticle::ModularEmitter
 	- osgParticle::AccelOperator
 	- osgParticle::ModularProgram
-
 * 11_Shadow 阴影效果
 	- osg::Node
 		- setNodeMask() --- 设置节点的 Mask
@@ -270,7 +275,6 @@
 		- setCenter
 		- setRadius
 		- setRange
-
 * 12_SharingTexture
 	- osgDB::Registry::instance()->setReadFileCallback() 设置读文件回调
 	- osgDB::ReadFileCallback 读文件回调类, 重写 readImage 函数
@@ -278,7 +282,6 @@
 	- osgDB::Registry::instance()->getOrCreateSharedStateManager 创建共享状态管理器
 	- osgDB::SharedStateManager
 		- share
-
 * 12_ThreadingModel
 	- osgViewer::ViewerBase::ThreadingModel 线程模型
 		- osgViewer::ViewerBase::AutomaticSelection
