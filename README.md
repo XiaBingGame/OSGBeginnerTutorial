@@ -1,4 +1,4 @@
- --- 使用 pageLOD 创建四叉树# OpenSceneGraph 3.0 - Beginner's Guide 源码
+# OpenSceneGraph 3.0 - Beginner's Guide 源码
 * 03_MonitorRFC
 	- 查看引用计数的变化
 	- osg::Referenced::referenceCount() --- 查看引用计数
