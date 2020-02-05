@@ -20,14 +20,14 @@
 			- PrimitiveSet
 * 04_DrawOctahedron
 	- 绘制一个多面体, 主要是讲图元, osg::DrawElementsUInt 可以创建一个索引数组, geometry 调用 addPrimitiveSet() 添加它.
-	- osgUtil::SmoothingVisitor::smooth 平滑一个几何体。
+	- osgUtil::SmoothingVisitor::smooth 平滑一个几何体, 主要是可以为一个几何体生成法线
 * 04_OpenGLTeapot
 	- 自定义 drawable, 进行自定义绘制
 	- osg::Drawable::computeBound() --- 返回对应的围绕盒
 	- osg::Drawable::drawImplementation() --- 绘制部分， 其内可以调用opengl的相关函数进行绘制。
 * 04_PrimitiveFunctor
 	- 仿函数, 可以统计多边形面信息
-	- osg::TriangleFunctor, 这里使用其打印面信息，调用模板类的 operator() 函数进行自定义操作
+	- 本例介绍了 osg::TriangleFunctor, 这里使用其打印面信息，调用模板类的 operator() 函数进行自定义操作, osg::TriangleFunctor 在模拟绘制三角形时调用.
 	- 主要原理 osg::Drawable::accept(Functor), 使用 Functor 的函数代替 OpenGL 的绘制函数。
 * 04_SimpleObject
 	- 几个简单的形状 box, sphere, cone
@@ -41,6 +41,10 @@
 * 05_AnalyzeStructure
 	- 遍历节点, 打印出其库名和类名
 	- 从 osg::NodeVisitor 派生
+		- 构造函数设置遍历模式 setTraversalMode(), 本例使用 osg::NodeVisitor::TRAVERSE_ALL_CHILDREN.
+		- 重写 apply 函数
+		- osg::Object::libraryName() 输出库名, osg::Object::className() 输出类名
+		- osg::Geode::getNumDrawables() 获取所有可绘制对象的数量, osg::Geode::getDrawable() 获取某个可绘制对象.
 * 05_LodNode
 	- osgUtil::Simplifier --- 简化几何体
 	- osg::LOD --- addChild, 添加子节点。
@@ -50,7 +54,8 @@
 * 05_SwitchAnimate
 	- osg::Switch
 		- setValue 设置可见性
-		- 重写 osg::Switch::traverse 方法, 各种遍历会调用, 如更新遍历
+		- 重写 osg::Switch::traverse 方法, 其在各种遍历会调用, 如更新遍历, 剔除遍历
+	- 本例通过遍历次数实现动画
 * 05_SwitchNode
 	- osg::Switch
 		- addChild 方法
@@ -61,6 +66,7 @@
 * 06_BezierCurve
 	- 使用几何着色器创建贝塞尔曲线， 几何着色器插值生成顶点
 	- 设置输出类型为 GL_LINE_STRIP， 输入类型为 GL_LINES_ADJACENCY_EXT
+		- 通过 osg::Program::setParameter 设置参数, 本例三个参数 GL_GEOMETRY_VERTICES_OUT_EXT 和 GL_GEOMETRY_INPUT_TYPE_EXT, GL_GEOMETRY_OUTPUT_TYPE_EXT
 	- 使用 line adjacency 图元作为输入, 该输入有四个元素
 * 06_CartoonCow
 	- 使用着色器进行卡通着色
@@ -107,6 +113,7 @@
 			- setRenderTargetImplementation 为帧缓存
 			- attach 一个纹理
 			- setReferenceFrame
+				- setReferenceFrame( osg::Transform::ABSOLUTE_RF ) 等同于 glLoadMatrix. 要切换回去则用 osg::Transform::RELATIVE_RF
 			- setViewMatrixAsLookAt
 * 08_AnimateCharacter
 	- osgAnimation::BasicAnimationManager --- 派生自更新回调
