@@ -92,6 +92,7 @@
 	- 创建球体几何体
 	- osg::BlendFunc
 * 07_FrameLoop
+	- 本例演示输出帧号
 	- osgViewer::Viewer::getFrameStamp()::getFrameNumber(): 得到帧号
 * 07_HUD
 	- 创建一个相机绘制 HUD 内容，相机有自己的矩阵，而后添加子节点
@@ -104,8 +105,12 @@
 	- osg::Camera::setRenderTargetImplementation() --- 设置渲染到帧缓存对象
 	- osg::Camera::attach() --- 渲染至纹理
 	- 从 osg::NodeVisitor 派生一个访问器, 替换其内使用的问题
+```
 		osg::Texture* oldTexture = dynamic_cast<osg::Texture*>(ss->getTextureAttribute(0, osg::StateAttribute::TEXTURE));
 		if (oldTexture) ss->setTextureAttribute(0, _texture.get());
+```
+	- osg::StateSet 调用 getTextureAttribute 以及osg::StateAttribute::TEXTURE 参数获得纹理.
+	- 替换所有 Node 和 Geode 的纹理, 如果为 Geode, 则替换其内所包含可渲染对象的所有纹理
 	- 步骤
 		- 创建一个纹理 osg::Texture
 		- 创建相机, 设置视口为纹理大小
@@ -118,23 +123,32 @@
 * 08_AnimateCharacter
 	- osgAnimation::BasicAnimationManager --- 派生自更新回调
 		- getAnimationList() --- 得到动画列表
-		- playAnimation() --- 应用上面动画列表中的一个动画
+		- osgAnimation::Animation
+    		- playAnimation() --- 应用上面动画列表中的一个动画
 * 08_AnimationChannel
 	- osgAnimation::Vec3Keyframe, osgAnimation::QuatKeyframe 关键帧组成 osgAnimation::Vec3KeyframeContainer 和 osgAnimation::QuatKeyframeContainer 两个容器
 	- osgAnimation::Vec3LinearChannel/osgAnimation::QuatSphericalLinearChannel
+		- 对于 channel 其有自身的 sampler, 每个sampler 内又包含一个插值器和一个 keyframe 容器.
 		- getOrCreateSampler()
 			- getOrCreateKeyframeContainer --- 得到容器
+			- sampler 的容器插入关键帧.
 	- osgAnimation::Animation
 		- setPlayMode
 		- addChannel
+		- 动画播放时根据内包含的频道更新数值.
 	- osgAnimation::UpdateMatrixTransform
 		- getStackedTransforms()
 			- 这是个容器， 保存 osgAnimation::StackedTranslateElement 元素 和 osgAnimation::StackedQuaternionElement 元素，这些名称的名字和之前 channel 的名字一样
-		- 这是一个节点更新回调
+		- 这是一个节点更新回调, 之前播放动画的时候, 会更新其内的频道值, 而这些频道值则会更新上面容器内的值.因此更新了该类关联的变换矩阵
 	- osgAnimation::BasicAnimationManager
 		- registerAnimation 注册一个动画
 		- 这也是一个更新回调
 		- playAnimation 播放动画
+	- 总结如下:
+		- 需要设置一个节点的更新回调为 BasicAnimationManger 类型, 主要用途为播放其内的 Animation
+		- 矩阵变换节点需要有个更新回调为 UpdateMatrixTransform 类型, 主要用途是使用 Animation 更新后的结果更新矩阵变换节点. 注意该矩阵变换节点使用的矩阵等于频道内的平移和旋转.
+		- 动画会包含所有需要更新的频道.
+		- 每个频道有自己的sampler, sampler 包含自己的插值器和关键帧容器.
 * 08_AnimationPath
 	- 实现动画路径
 	- osg::AnimationPath
@@ -144,6 +158,7 @@
 		- setAnimationPath 设置路径(osg::AnimationPath)
 	- 通常设置为节点更新回调
 * 08_FadingIn
+	- 演示了 osg::Matrial 属性以及其相应的回调, 并演示了 osgAnimation::InOutCubicMotion
 	- 设置对象的状态属性更新回调
 	- osg::StateAttributeCallback 派生自 osg::Callback
 		- bool run()
@@ -151,6 +166,7 @@
 			- 本例修改 osg::Material 内 Diffuse 的 alpha 值, osg::Material 从 osg::StateAttribute 指针而来
 		- osg::StateAttribute 可以设置更新回调
 	- osgAnimation::InOutCubicMotion
+		- 本例使用 update 更新, 使用 getValue 获取其值
 		- 类型别名 osgAnimation::MathMotionTemplate<InOutCubicFunction>
 		- 结构体 MathMotionTemplate 派生自 osgAnimation::Motion
 			- osgAnimation::Motion
@@ -158,7 +174,7 @@
 			- MathMotionTemplate 重写了函数 getValueInNormalizedRange, 调用了模板类的 getValueAt 函数
 		- 结构体 InOutCubicFunction 重写了 getValueAt 函数, 三次方来回运动
 * 08_Flashing
-	- 设置闪烁动画, 使用 osg::ImageSequence
+	- 设置连续图像动画, 使用 osg::ImageSequence
 		- addImage() --- 添加图像 
 		- setLength() --- 设置时间长度
 		- play() --- 播放
@@ -169,6 +185,7 @@
 		- setImage() 目标可以是 osg::ImageSequence
 * 08_GeometryDynamically
 	- 通过更新回调更改一个几何体, 该回调为 osg::Drawable::UpdateCallback 的派生类
+	- 同时演示了 osg::Drawable 的更新回调, 其更新回调重写的是 update() 函数
 	- 更新几何数组后调用函数 osg::Geometry::dirtyDisplayList() 和 osg::Geometry::dirtyBound() 更新显示列表和围绕盒
 * 08_SwitchUpdate
 	- 通过更新回调切换Switch节点子节点的状态
@@ -195,10 +212,12 @@
 		- 通过矩阵变换绘制和移动线框
 	- 鼠标点击创建框框, 通过 MatrixTransform 实现
 	- NodeMask 的使用
+	- 本例使用相机接受相交访问器(osgUtil::IntersectionVisitor)
 	- 鼠标点击相交检测
 	- osgUtil::IntersectionVisitor 访问, 使用相机 accept 调用该 visitor
 	- osg::computeLocalToWorld 计算矩阵
 * 09_UserTimer --- 可以添加一个用户事件
+	- 本例是在 Frame 事件中添加用户事件
 	- osgGA::GUIEventAdapter::FRAME 可以处理帧事件
 	- viewer->getEventQueue()->userEvent() --- 添加一个用户事件
 * 09_Win32Handler --- Win32 API 和 osg
@@ -256,6 +275,7 @@
 		- setPosition
 		- setText
 * 12_MultiThread --- 多线程程序
+	- 本例演示键盘输入, 屏幕显示输入内容.
 	- OpenThreads::Thread 派生一个线程类
 	- OpenThreads::Mutex 互斥信号
 	- OpenThreads::ScopedLock<OpenThreads::Mutex> 锁
@@ -283,6 +303,7 @@
 		- setRadius
 		- setRange
 * 12_SharingTexture
+	- 当读写图像文件时, 如果之前已经读取则不用再次访问硬盘, 直接从内存中获取.
 	- osgDB::Registry::instance()->setReadFileCallback() 设置读文件回调
 	- osgDB::ReadFileCallback 读文件回调类, 重写 readImage 函数
 		- osgDB::Registry::instance()->readImageImplementation 调用底层的实现
@@ -297,3 +318,4 @@
 		- osgViewer::ViewerBase::ThreadPerCamera
 	- osgViewer::CompositeViewer
 		- addView 添加多个 View
+		- setThreadingMode --- 设置线程模式

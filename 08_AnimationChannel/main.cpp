@@ -43,8 +43,8 @@ int main(int argc, char** argv)
 	animation->addChannel(ch2.get());
 
 	osg::ref_ptr<osgAnimation::UpdateMatrixTransform> updater = new osgAnimation::UpdateMatrixTransform("PathCallback");
-	updater->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("position"));
-	updater->getStackedTransforms().push_back(new osgAnimation::StackedQuaternionElement("quat"));
+	// updater->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("position"));
+	// updater->getStackedTransforms().push_back(new osgAnimation::StackedQuaternionElement("quat"));
 
 	osg::ref_ptr<osg::MatrixTransform> animRoot = new osg::MatrixTransform;
 	animRoot->addChild(osgDB::readNodeFile("cessna.osg.0,0,90.rot"));

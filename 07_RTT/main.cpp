@@ -5,8 +5,6 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/Viewer>
 
-
-
 class FindTextureVisitor : public osg::NodeVisitor
 {
 public:
@@ -58,22 +56,18 @@ int main(int argc, char** argv)
 	osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
 	texture->setTextureSize(tex_width, tex_height);
 	texture->setInternalFormat(GL_RGBA);
-	texture->setFilter(osg::Texture2D::MIN_FILTER,
-		osg::Texture2D::LINEAR);
-	texture->setFilter(osg::Texture2D::MAG_FILTER,
-		osg::Texture2D::LINEAR);
+	texture->setFilter(osg::Texture2D::MIN_FILTER, osg::Texture2D::LINEAR);
+	texture->setFilter(osg::Texture2D::MAG_FILTER, osg::Texture2D::LINEAR);
 
 	FindTextureVisitor ftv(texture.get());
 	if (model.valid()) model->accept(ftv);
 
 	osg::ref_ptr<osg::Camera> camera = new osg::Camera;
 	camera->setViewport(0, 0, tex_width, tex_height);
-	camera->setClearColor(osg::Vec4(1.0f, 1.0f, 1.0f, 0.0f));
+	camera->setClearColor(osg::Vec4(0.0f, 0.0f, 0.0f, 0.0f));
 	camera->setClearMask(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	camera->setRenderOrder(osg::Camera::PRE_RENDER);
-	camera->setRenderTargetImplementation(
-		osg::Camera::FRAME_BUFFER_OBJECT);
+	camera->setRenderTargetImplementation(osg::Camera::FRAME_BUFFER_OBJECT);
 	camera->attach(osg::Camera::COLOR_BUFFER, texture.get());
 
 	camera->setReferenceFrame(osg::Camera::ABSOLUTE_RF);
