@@ -1,3 +1,6 @@
 *project/
 *.vs/
+*vs2015_64/
 OSGCookExample/
+*build.bat
+.gitignore

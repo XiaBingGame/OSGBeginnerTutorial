@@ -5,11 +5,15 @@
 * 03_ReadFromCommandLine
 	- 从命令行读取文件
 	- osg::ArgumentParser
+	- osg::ArgumentParser::read("--parameter", value) 读取参数
 * 03_RedirectNotifier
 	- 设置输出调试信息到文件
 	- 派生类 osg::NotifyHandler
 		- 重写 notify() 方法
 	- osg::setNotifyLevel() / osg::setNotifyHandler() 方法
+```
+	OSG_FATAL << "Test Fatal notify.";
+```
 * 04_ColoredQuad
 	- 绘制一个四边形
 	- Geode
@@ -17,25 +21,28 @@
 			- VertexArray
 			- NormalArray
 			- ColorArray
-			- PrimitiveSet
+			- PrimitiveSet：添加 DrawArrays 和 DrawElements
+		- addDrawable: 添加几何体
 * 04_DrawOctahedron
+	- 主要讲述如何通过索引创建一个几何体
 	- 绘制一个多面体, 主要是讲图元, osg::DrawElementsUInt 可以创建一个索引数组, geometry 调用 addPrimitiveSet() 添加它.
 	- osgUtil::SmoothingVisitor::smooth 平滑一个几何体, 主要是可以为一个几何体生成法线
 * 04_OpenGLTeapot
-	- 自定义 drawable, 进行自定义绘制
-	- osg::Drawable::computeBound() --- 返回对应的围绕盒
-	- osg::Drawable::drawImplementation() --- 绘制部分， 其内可以调用opengl的相关函数进行绘制。
+	- 自定义 drawable, 进行自定义绘制, 通过 OpenGL 函数进行绘制， 需要实现下面的两个函数
+    	- osg::Drawable::computeBound() --- 返回对应的围绕盒
+    	- osg::Drawable::drawImplementation() --- 绘制部分， 其内可以调用opengl的相关函数进行绘制。
 * 04_PrimitiveFunctor
 	- 仿函数, 可以统计多边形面信息
 	- 本例介绍了 osg::TriangleFunctor, 这里使用其打印面信息，调用模板类的 operator() 函数进行自定义操作, osg::TriangleFunctor 在模拟绘制三角形时调用.
-	- 主要原理 osg::Drawable::accept(Functor), 使用 Functor 的函数代替 OpenGL 的绘制函数。
+	- 主要原理 osg::Drawable::accept(Functor), 使用 Functor 的函数代替 OpenGL 的绘制函数, 可绘制对象调用仿函数，参数是三个顶点
 * 04_SimpleObject
 	- 几个简单的形状 box, sphere, cone
-	- osg::ShapeDrawable::setShape()
+	- osg::ShapeDrawable::setShape() --- 设置不同的形状
 * 04_TessellatePolygon
 	- 凹多边形转凸多边形(分形化一个 Geometry)
 	- osgUtil::Tessellator
 		- retessellatePolygons() 分形化一个几何体
+	- 这里对几何体 Tessellator 之后再将其添加至 geode 内
 * 05_AddModel
 	- osg::Group::addChild
 * 05_AnalyzeStructure
@@ -46,6 +53,7 @@
 		- osg::Object::libraryName() 输出库名, osg::Object::className() 输出类名
 		- osg::Geode::getNumDrawables() 获取所有可绘制对象的数量, osg::Geode::getDrawable() 获取某个可绘制对象.
 * 05_LodNode
+	- 实现一个LOD节点
 	- osgUtil::Simplifier --- 简化几何体
 	- osg::LOD --- addChild, 添加子节点。
 * 05_ProxyNode
@@ -67,14 +75,17 @@
 	- 使用几何着色器创建贝塞尔曲线， 几何着色器插值生成顶点
 	- 设置输出类型为 GL_LINE_STRIP， 输入类型为 GL_LINES_ADJACENCY_EXT
 		- 通过 osg::Program::setParameter 设置参数, 本例三个参数 GL_GEOMETRY_VERTICES_OUT_EXT 和 GL_GEOMETRY_INPUT_TYPE_EXT, GL_GEOMETRY_OUTPUT_TYPE_EXT
+		- 顶点输出数量，几何着色器的输入类型，几何着色器的输出类型
 	- 使用 line adjacency 图元作为输入, 该输入有四个元素
+	- 几何着色器输入有 gl_PositionIn 数组, 通过 EmitVertex() 输出顶点, EndPrimitive() 结束图元绘制
 * 06_CartoonCow
 	- 使用着色器进行卡通着色
+	- 根据点乘光的方向和法线向量设置颜色值
 * 06_Fog
-	- Fog 的使用
+	- osg::Fog 的使用，作为 osg::StateSet 的属性
 		- setMode，setStart，setEnd，setColor
 * 06_Lighting
-	- 创建 osg::LightSource --- 光源实体
+	- 创建 osg::LightSource --- 光源实体, 是一个节点
 		- 创建 osg::Light --- 光源属性
 		- setLight
 			- setLightNum --- 设置光源序号
@@ -82,25 +93,37 @@
 * 06_PolygonMode
 	- 线框模式绘制
 	- osg::PolygonMode
-		- setMode
+		- setMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE)
 * 06_StateSetInherit
 	- 状态属性的继承关系
-	-  osg::StateAttribute::OVERRIDE，osg::StateAttribute::PROTECTED
+	- osg::StateAttribute::OVERRIDE，osg::StateAttribute::PROTECTED
+	- osg::StateAttribute::PROTECTED 不被上层覆盖
 * 06_Texture2D
 	- 创建一个四边形，然后贴上纹理
 * 06_Translucent --- 创建透明物体
 	- 创建球体几何体
-	- osg::BlendFunc
+	- osg::BlendFunc: GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA
 * 07_FrameLoop
 	- 本例演示输出帧号
+	- osgViewer::done() 是否结束
+	- osgViewer::frame() 运行一帧
 	- osgViewer::Viewer::getFrameStamp()::getFrameNumber(): 得到帧号
 * 07_HUD
 	- 创建一个相机绘制 HUD 内容，相机有自己的矩阵，而后添加子节点
+	- 实现步骤
+		- 创建相机 osg::Camera
+		- 设置清除 mask
+		- 设置渲染顺序为 osg::Camera::POST_RENDER
+		- 设置参考坐标系为 osg::Camera::ABSOLUTE_RF
+		- 设置视图矩阵
+		- 添加子节点
+		- 添加作为场景根节点的子节点
 * 07_MultipleScene(多窗口场景)
 	- osgViewer::View --- 创建一个单独的窗口，在其内绘制视图场景
 	- osgViewer::CompositeViewer::addView --- 添加这样的视图窗口
+		- 管理多个 osgViewer::View
 * 07_MultiSampling(多重采样)
-	- osg::DisplaySettings::setNumMultiSamples() --- 设置多重采样
+	- osg::DisplaySettings::setNumMultiSamples() --- 设置多重采样的参数
 * 07_RTT(渲染到纹理)
 	- osg::Camera::setRenderTargetImplementation() --- 设置渲染到帧缓存对象
 	- osg::Camera::attach() --- 渲染至纹理

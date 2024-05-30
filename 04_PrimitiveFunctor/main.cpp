@@ -11,6 +11,11 @@ std::ostream& operator<<(std::ostream& os, const osg::Vec3& v)
 
 struct FaceCollector
 {
+	void operator()(const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3)
+	{
+		std::cout << "Face vertices: " << v1 << "; " << v2 << "; " << v3 << std::endl;
+	}
+
 	void operator()(const osg::Vec3& v1, const osg::Vec3& v2, const osg::Vec3& v3, bool)
 	{
 		std::cout << "Face vertices: " << v1 << "; " << v2 << "; " << v3 << std::endl;

@@ -1,6 +1,8 @@
 #include <iostream>
 #include <osg/Referenced>
 #include <osg/ref_ptr>
+#include <osg/Matrixd>
+#include <osg/Vec3d>
 
 class MonitoringTarget : public osg::Referenced
 {
@@ -45,6 +47,23 @@ int main(int argc, char** argv)
 		MonitoringTarget* subTarget = createMonitoringTarget(i);
 	}
 
-	// system("pause");
+	osg::Matrixd m = osg::Matrixd::rotate(osg::DegreesToRadians(70.0), osg::X_AXIS)  * 
+		osg::Matrixd::rotate(osg::DegreesToRadians(30.0), osg::Y_AXIS) * osg::Matrixd::rotate(osg::DegreesToRadians(90.0), osg::Z_AXIS);
+	osg::Vec3d v = osg::Vec3d(0.0, 1.0, 0.0);
+	v = v * m;
+	std::cout << v.x() << ", " << v.y() << ", " << v.z() << std::endl;
+	osg::Vec3d v2(v.x(), v.y(), 0.0);
+	v2.normalize();
+	double yaw = osg::RadiansToDegrees(acos(v2.y()));
+	if (v2.x() > 0)
+		yaw = -yaw;
+	std::cout << "yaw: " << yaw << std::endl;
+
+	double pv = v2.x()*v.x() + v2.y()*v.y();
+	double pitch = acos(pv);
+	pitch = osg::RadiansToDegrees(pitch);
+	std::cout << "pitch: "<< pitch << std::endl;
+
+	system("pause");
 	return 0;
 }

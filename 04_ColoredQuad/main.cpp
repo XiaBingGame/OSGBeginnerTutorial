@@ -24,9 +24,7 @@ int main(int argc, char** argv)
 	geom->setColorArray(colors.get());
 	geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 	geom->setColorBinding(osg::Geometry::BIND_PER_VERTEX);
-
 	geom->addPrimitiveSet(new osg::DrawArrays(GL_QUADS, 0, 4));
-
 	osg::ref_ptr<osg::Geode> geode = new osg::Geode;
 	geode->addDrawable(geom.get());
 
